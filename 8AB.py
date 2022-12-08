@@ -29,12 +29,14 @@ print(sum([1 if a else 0 for line in m for a in line]))
 
 def view_dist(a):
     x, y, h = a
-    xm = list(map(lambda v: v >= h, mapping[y][x::-1]))
-    xp = list(map(lambda v: v >= h, mapping[y][x:]))
-    ym = list(map(lambda v: v >= h, mappingp[x][y:]))
-    yp = list(map(lambda v: v >= h, mappingp[x][y::-1]))
+    xm = [v >= h for v in mapping[y][x::-1]]
+    xp = [v >= h for v in mapping[y][x:]]
+    ym = [v >= h for v in mappingp[x][y:]]
+    yp = [v >= h for v in mappingp[x][y::-1]]
     return prod(map(lambda l: l.index(True, 1) if any(l[1:]) else len(l)-1, [xm, xp, ym, yp]))
 
 res = map(view_dist, [(x, y, int(h)) for y, line in enumerate(lines) for x, h in enumerate(line)])
 
 print(max(list(res)))
+
+print(max(list(map(lambda a: prod(map(lambda l: l.index(True, 1) if any(l[1:]) else len(l)-1, [[v >= a[2] for v in map] for map in [mapping[a[1]][a[0]::-1], mapping[a[1]][a[0]:], mappingp[a[0]][a[1]:], mappingp[a[0]][a[1]::-1]]])), [(x, y, int(h)) for y, line in enumerate(lines) for x, h in enumerate(line)]))))
