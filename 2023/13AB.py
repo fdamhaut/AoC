@@ -24,17 +24,17 @@ def check_pattern(pattern, n):
             return False
     return True
 
-def find(pattern):
+def find(pattern, fun):
     for n, line in enumerate(pattern[:-1]):
-        if check_pattern(pattern, n):
+        if fun(pattern, n):
             return (n+1)*100
     tp = transpose(pattern)
     for n, line in enumerate(tp[:-1]):
-        if check_pattern(tp, n):
+        if fun(tp, n):
             return (n+1)
     return 0
 
-print(sum(find(pattern) for pattern in patterns))
+print(sum(find(pattern, check_pattern) for pattern in patterns))
 
 def find_diff(s1, s2):
     return [i for i in range(len(s1)) if s1[i] != s2[i]]
@@ -53,14 +53,5 @@ def find_smudge(pattern, n):
             return False
     return diff
 
-def find(pattern):
-    for n, line in enumerate(pattern[:-1]):
-        if find_smudge(pattern, n):
-            return (n+1)*100
-    tp = transpose(pattern)
-    for n, line in enumerate(tp[:-1]):
-        if find_smudge(tp, n):
-            return (n+1)
-    return 0
 
-print(sum(find(pattern) for pattern in patterns))
+print(sum(find(pattern, find_smudge) for pattern in patterns))
