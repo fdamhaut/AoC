@@ -1,4 +1,3 @@
-from collections import defaultdict
 import sys
 import functools
 
@@ -39,36 +38,36 @@ def canfit(s, v, sv=False):
         res += canfit(s[v[0]+1:], v[1:], sv-v[0]-1)
     return res
 
-def groups(l, n):
+@functools.lru_cache(maxsize=None)
+def groups(l, n, s):
     if n == 1:
-        yield [tuple(l)]
-        return
+        return [[tuple(l)]]
     if not l:
-        yield [tuple() for _ in range(n)]
-        return
+        return [[tuple() for _ in range(n)]]
+    res = []
+    maxval = len(s[0])
     for i in range(len(l)+1):
         t = tuple(l[:i])
-        for j in groups(l[i:], n-1):
-            yield [t] + j
+        if sum(t)+len(t)-1 > maxval:
+            break
+        for j in groups(l[i:], n-1, s[1:]):
+            res += [[t] + j]
+    return res
+
 def solve(s, v):
     res = 0
-    for gs in groups(v, len(s)):
+    for gs in groups(tuple(v), len(s), tuple(s)):
         r = 1
         for su, g in zip(s, gs):
             r *= canfit(su, g)
         res += r
     return res
 
-# print(lines)
-# print(canfit('???', [1, 1]))
-#
-# res = [(s, v, solve(s, v)) for s, v in lines]
-
 print(sum(solve(s, v) for s, v in lines))
 
 res = 0
-for n, (s, v) in enumerate(lines2):
-    print(n, s, v)
-    res += solve(s*5, v*5)
+for n, (s, v) in enumerate(lines2, 1):
+    print(n)
+    res += solve(s, v)
 
 print(res)
